@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Thư chúc 20/10</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ffef9f, #fff5c4);
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+    .envelope {
+      position: relative;
+      width: 200px;
+      height: 130px;
+      background: #2b8cd6;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: transform 0.4s ease;
+    }
+    .envelope:hover { transform: scale(1.05); }
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 100px solid transparent;
+      border-right: 100px solid transparent;
+      border-bottom: 80px solid #4cb2f7;
+      border-radius: 10px 10px 0 0;
+      transition: transform 0.5s ease;
+      transform-origin: top;
+    }
+    .letter {
+      position: absolute;
+      top: 20px;
+      left: 10px;
+      width: 180px;
+      height: 100px;
+      background: white;
+      border-radius: 8px;
+      transform: translateY(80px);
+      transition: transform 0.6s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: #2b8cd6;
+    }
+    .open .flap {
+      transform: rotateX(180deg);
+    }
+    .open .letter {
+      transform: translateY(-60px);
+    }
+
+    .message-box {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: fadein 0.5s ease forwards;
+    }
+    .message-content {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      position: relative;
+      animation: pop 0.5s ease forwards;
+    }
+    .message-content h2 {
+      margin: 0;
+      color: #2b8cd6;
+    }
+    .message-content p {
+      margin-top: 16px;
+      color: #444;
+      line-height: 1.6;
+    }
+    .close-btn {
+      background: #2b8cd6;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .close-btn:hover { background: #1874b7; }
+
+    @keyframes pop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .confetti {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .confetti span {
+      position: absolute;
+      width: 10px;
+      height: 14px;
+      opacity: 0;
+      transform: translateY(-20px) rotate(0deg);
+    }
+  </style>
+</head>
+<body>
+  <div class="envelope" id="envelope">
+    <div class="flap"></div>
+    <div class="letter">Nhấp để mở 💌</div>
+  </div>
+
+  <div class="message-box" id="messageBox">
+    <div class="message-content">
+      <h2>🌼 Gửi tặng em 🌼</h2>
+      <p>Nhân ngày 20/10, chúc em luôn rạng rỡ, tự tin và gặp thật nhiều niềm vui trong cuộc sống. Mong rằng những điều tốt đẹp nhất sẽ luôn đến với em — cô gái tuyệt vời mà ai gặp cũng phải mỉm cười 😊</p>
+      <button class="close-btn" id="closeBtn">Đóng lại</button>
+    </div>
+  </div>
+
+  <div class="confetti" id="confetti"></div>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    const messageBox = document.getElementById('messageBox');
+    const closeBtn = document.getElementById('closeBtn');
+    const confettiRoot = document.getElementById('confetti');
+
+    envelope.addEventListener('click', () => {
+      envelope.classList.add('open');
+      setTimeout(() => {
+        messageBox.style.display = 'flex';
+        burstConfetti();
+      }, 600);
+    });
+
+    closeBtn.addEventListener('click', () => {
+      messageBox.style.display = 'none';
+      envelope.classList.remove('open');
+    });
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+    function createPiece() {
+      const el = document.createElement('span');
+      el.style.left = rand(0, 100) + '%';
+      el.style.top = rand(-10, 10) + '%';
+      el.style.background = `hsl(${rand(0,360)},70%,60%)`;
+      el.style.transform = `rotate(${rand(0,360)}deg)`;
+      el.style.opacity = 1;
+      el.style.transition = 'transform 1.6s linear, top 1.6s cubic-bezier(.2,.8,.2,1), opacity 1.6s linear';
+      confettiRoot.appendChild(el);
+      requestAnimationFrame(() => {
+        el.style.top = '120%';
+        el.style.transform = `translateY(0) rotate(${rand(360,720)}deg)`;
+        el.style.opacity = 0;
+      });
+      setTimeout(() => el.remove(), 1700);
+    }
+    function burstConfetti() {
+      for (let i = 0; i < 50; i++) setTimeout(createPiece, i * 10);
+    }
+  </script>
+</body>
+</html>
